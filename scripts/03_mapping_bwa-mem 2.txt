@@ -1,0 +1,39 @@
+#aligment com bwa-mem2
+
+cd /mnt/c/Users/User/Desktop/wgs_videira/vitis_project
+
+# Indexar para bwa-mem2 e samtools (só é necessário fazer uma vez)
+bwa-mem2 index "$REF"
+samtools faidx "$REF"
+echo "Referência indexada com sucesso!"
+
+REF="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/reference/T2T_ref/T2T_ref.fasta"
+R1="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/trimmed/BL5_006_1_paired.fastq"
+R2="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/trimmed/BL5_006_2_paired.fastq"
+
+
+# Alinhamento (usa todos os núcleos disponíveis)
+bwa-mem2 mem -t $(nproc) -R "@RG\tID:BL5_006\tSM:BL5_006\tPL:ILLUMINA" \
+    "$REF" "$R1" "$R2" > BL5_006_aligned.sam
+
+# Converter para BAM ordenado
+samtools view -@ $(nproc) -bS BL5_006_aligned.sam | \
+samtools sort -@ $(nproc) -o BL5_006_sorted.bam -
+
+# Indexar o BAM final
+samtools index BL5_006_sorted.bam
+
+# Apagar ficheiro temporário gigante
+rm BL5_006_aligned.sam
+
+echo "Alinhamento concluído → BL5_006_sorted.bam criado"
+
+#QC
+
+BAM="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/mapping_V5/BL2_067_sorted.bam"
+
+samtools flagstat "$BAM"
+
+samtools stats "$BAM" > "${BAM%.bam}.stats.txt"
+
+samtools depth -a "$BAM" | awk '{sum+=$3; n++} END {if(n>0) print "Cobertura média: " sum/n "x"}'

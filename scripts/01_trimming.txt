@@ -1,0 +1,95 @@
+Trimmomatic-0
+
+java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/BL2_020_1.fastq/BL2_020_1.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/BL2_020_2.fastq/BL2_020_2.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL2_020_1_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL2_020_1_unpaired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL2_020_2_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL2_020_2_unpaired.fastq \
+ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+
+java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/BL5_006_1.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/BL5_006_2.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5_006_1_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5_006_1_unpaired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5_006_2_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5_006_2_unpaired.fastq \
+ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+
+java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/BL5_031_1.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/BL5_031_2.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5_031_1_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5_031_1_unpaired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5_031_2_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5_031_2_unpaired.fastq \
+ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/AMARAL_1.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/AMARAL_2.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/AMARAL_1_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/AMARAL_1_unpaired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/AMARAL_2_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/AMARAL_2_unpaired.fastq \
+ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/LOUREIRO_1.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/LOUREIRO_2.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_1_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_1_unpaired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_2_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_2_unpaired.fastq \
+ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/PINTOSA_1.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/PINTOSA_2.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_1_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_1_unpaired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_2_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_2_unpaired.fastq \
+ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/SOUSAO_GALEGO_1.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/SOUSAO_GALEGO_2.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/SOUSAO_GALEGO_1_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/SOUSAO_GALEGO_1_unpaired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/SOUSAO_GALEGO_2_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/SOUSAO_GALEGO_2_unpaired.fastq \
+ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/BL5-096_REP_1.fastq/BL5-096_REP_1.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/BL5-096_REP_2.fastq/BL5-096_REP_2.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5-096_REP_1_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5-096_REP_1_unpaired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5-096_REP_2_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5-096_REP_2_unpaired.fastq \
+ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/ESGANA_CAO_1.fastq/ESGANA_CAO_1.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/raw_data/ESGANA_CAO_2.fastq/ESGANA_CAO_2.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/ESGANA_CAO_1_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/ESGANA_CAO_1_unpaired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/ESGANA_CAO_2_paired.fastq \
+/mnt/c/Users/User/Desktop/wgs_videira/trimmed/ESGANA_CAO_2_unpaired.fastq \
+ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+
+
