@@ -2,7 +2,7 @@
 
 Bioinformatics pipeline for whole genome sequencing (WGS) of *Vitis vinifera* samples, including read trimming, alignment, variant calling, and cultivar identification through SNP profile comparison against the VIVC (Vitis International Variety Catalogue) database.
 
-> **Note:** The files `vivc112.bed`, `vivc110snpsv5v12x.txt` and `vivc_snp_db.txt` are not included in this repository as they are third-party resources. Please contact the authors or the VIVC directly to obtain them.
+> **Note:** Some steps require third-party reference files that are not included in this repository. These must be obtained directly from the respective authors or databases. Details are indicated at each step.
 
 ---
 
@@ -44,7 +44,7 @@ SNP profile (.xlsx)
 Cultivar match results (.txt)
 ```
 
-**Number of samples processed:** 15 *Vitis vinifera* cultivar accessions
+This pipeline is designed to be **sample-agnostic** — it can be applied to any number of *Vitis vinifera* accessions by repeating each step with the corresponding sample name.
 
 ---
 
@@ -134,9 +134,7 @@ wgs_videira/
     │   │   └── [bwa-mem2 index files]
     │   ├── PN40024.v4/              # PN40024 v4 reference (alternative)
     │   ├── PN40024.12x_v2/          # PN40024 12X v2 (SNP panel origin)
-    │   ├── vivc112.bed              # [NOT INCLUDED — third-party]
-    │   ├── vivc110snpsv5v12x.txt    # [NOT INCLUDED — third-party]
-    │   └── vivc_snp_db.txt          # [NOT INCLUDED — third-party]
+    │   └── [third-party reference files — not included]
     │
     ├── trimmed/                     # Trimmed reads (project copy)
     ├── mapping_V5/                  # Sorted BAM files + indexes
@@ -182,14 +180,20 @@ gatk --version
 Trimmomatic 0.39 in paired-end mode. Parameters: adapter removal (TruSeq3-PE), quality sliding window (4:15), minimum length 36 bp.
 
 ```bash
-java -jar /home/ser/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 4 \
-    /mnt/c/Users/User/Desktop/wgs_videira/raw_data/SAMPLE_1.fastq \
-    /mnt/c/Users/User/Desktop/wgs_videira/raw_data/SAMPLE_2.fastq \
-    /mnt/c/Users/User/Desktop/wgs_videira/trimmed/SAMPLE_1_paired.fastq \
-    /mnt/c/Users/User/Desktop/wgs_videira/trimmed/SAMPLE_1_unpaired.fastq \
-    /mnt/c/Users/User/Desktop/wgs_videira/trimmed/SAMPLE_2_paired.fastq \
-    /mnt/c/Users/User/Desktop/wgs_videira/trimmed/SAMPLE_2_unpaired.fastq \
-    ILLUMINACLIP:/home/ser/Trimmomatic-0.39/adapters/TruSeq3-PE.fa:2:30:10 \
+# Set paths
+BASE="/path/to/wgs_project"
+TRIMMOMATIC="/path/to/Trimmomatic-0.39/trimmomatic-0.39.jar"
+ADAPTERS="/path/to/Trimmomatic-0.39/adapters/TruSeq3-PE.fa"
+SAMPLE="SAMPLE_NAME"
+
+java -jar "$TRIMMOMATIC" PE -threads 4 \
+    "$BASE/raw_data/${SAMPLE}_1.fastq" \
+    "$BASE/raw_data/${SAMPLE}_2.fastq" \
+    "$BASE/trimmed/${SAMPLE}_1_paired.fastq" \
+    "$BASE/trimmed/${SAMPLE}_1_unpaired.fastq" \
+    "$BASE/trimmed/${SAMPLE}_2_paired.fastq" \
+    "$BASE/trimmed/${SAMPLE}_2_unpaired.fastq" \
+    ILLUMINACLIP:${ADAPTERS}:2:30:10 \
     LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 ```
 
@@ -202,9 +206,12 @@ Replace `SAMPLE` with the sample name for each accession.
 FastQC on trimmed paired reads.
 
 ```bash
-fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
-    "/mnt/c/Users/User/Desktop/wgs_videira/trimmed/SAMPLE_1_paired.fastq" \
-    "/mnt/c/Users/User/Desktop/wgs_videira/trimmed/SAMPLE_2_paired.fastq"
+BASE="/path/to/wgs_project"
+SAMPLE="SAMPLE_NAME"
+
+fastqc -o "$BASE/qc" \
+    "$BASE/trimmed/${SAMPLE}_1_paired.fastq" \
+    "$BASE/trimmed/${SAMPLE}_2_paired.fastq"
 ```
 
 ---
@@ -216,7 +223,7 @@ BWA-MEM2 alignment to the T2T reference genome.
 **Index the reference once:**
 
 ```bash
-REF="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/reference/T2T_ref/T2T_ref.fasta"
+REF="/path/to/reference/T2T_ref/T2T_ref.fasta"
 
 bwa-mem2 index "$REF"
 samtools faidx "$REF"
@@ -226,29 +233,31 @@ echo "Reference indexed!"
 **Map each sample:**
 
 ```bash
-cd /mnt/c/Users/User/Desktop/wgs_videira/vitis_project
+BASE="/path/to/wgs_project"
+REF="$BASE/reference/T2T_ref/T2T_ref.fasta"
+SAMPLE="SAMPLE_NAME"
 
-REF="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/reference/T2T_ref/T2T_ref.fasta"
-R1="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/trimmed/SAMPLE_1_paired.fastq"
-R2="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/trimmed/SAMPLE_2_paired.fastq"
+R1="$BASE/trimmed/${SAMPLE}_1_paired.fastq"
+R2="$BASE/trimmed/${SAMPLE}_2_paired.fastq"
 
 # Align and sort to BAM (pipe — no intermediate SAM file)
 bwa-mem2 mem -t $(nproc) \
-    -R "@RG\tID:SAMPLE\tSM:SAMPLE\tPL:ILLUMINA" \
+    -R "@RG\tID:${SAMPLE}\tSM:${SAMPLE}\tPL:ILLUMINA" \
     "$REF" "$R1" "$R2" | \
 samtools view -@ $(nproc) -bS | \
-samtools sort -@ $(nproc) -o SAMPLE_sorted.bam -
+samtools sort -@ $(nproc) -m 4G \
+    -o "$BASE/mapping/${SAMPLE}_sorted.bam"
 
 # Index BAM
-samtools index SAMPLE_sorted.bam
+samtools index "$BASE/mapping/${SAMPLE}_sorted.bam"
 
-echo "Mapping complete → SAMPLE_sorted.bam"
+echo "Mapping complete → ${SAMPLE}_sorted.bam"
 ```
 
 **BAM quality control:**
 
 ```bash
-BAM="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/mapping_V5/SAMPLE_sorted.bam"
+BAM="$BASE/mapping/${SAMPLE}_sorted.bam"
 
 samtools flagstat "$BAM"
 samtools stats "$BAM" > "${BAM%.bam}.stats.txt"
@@ -264,18 +273,20 @@ samtools depth -a "$BAM" | awk '{sum+=$3; n++} END {if(n>0) print "Mean coverage
 
 ### 04. Variant Calling
 
-GATK HaplotypeCaller in GVCF mode, restricted to the 110 SNP positions defined in `vivc112.bed`.
+GATK HaplotypeCaller in GVCF mode, restricted to the diagnostic SNP positions defined in a BED interval file.
 
-> **Requires:** `vivc112.bed` (not included — third-party file)
+> **Requires:** A BED file with the target SNP positions in T2T coordinates (not included — obtain from the SNP panel authors).
 
 ```bash
-cd /mnt/c/Users/User/Downloads/gatk-4.6.2.0/gatk-4.6.2.0
+BASE="/path/to/wgs_project"
+SAMPLE="SAMPLE_NAME"
+BED="/path/to/reference/snp_panel.bed"   # BED file with target SNP positions
 
-./gatk HaplotypeCaller \
-    -R /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/reference/T2T_ref/T2T_ref.fasta \
-    -I /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/mapping_V5/SAMPLE_sorted.bam \
-    -L /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/vivc112.bed \
-    -O /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/SAMPLE.g.vcf.gz \
+gatk HaplotypeCaller \
+    -R "$BASE/reference/T2T_ref/T2T_ref.fasta" \
+    -I "$BASE/mapping/${SAMPLE}_sorted.bam" \
+    -L "$BED" \
+    -O "$BASE/vcf_files/${SAMPLE}.g.vcf.gz" \
     -ERC GVCF
 ```
 
@@ -283,9 +294,9 @@ cd /mnt/c/Users/User/Downloads/gatk-4.6.2.0/gatk-4.6.2.0
 
 ```bash
 bcftools query \
-    -f '%CHROM %POS %REF %ALT [%GT]\n' \
-    /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/SAMPLE.g.vcf.gz \
-    > /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/SAMPLE.txt
+    -f '%CHROM\t%POS\t%REF\t%ALT\t[%GT]\n' \
+    "$BASE/vcf_files/${SAMPLE}.g.vcf.gz" \
+    > "$BASE/vcf_files/${SAMPLE}.txt"
 ```
 
 The output `.txt` file has columns: `CHROM POS REF ALT GT`
@@ -310,9 +321,9 @@ Import each sample's `.txt` file into Excel and build a genotype profile. Each s
 | SNP_ID | SNP name from VIVC panel |
 | SUBJECT_STRAND | Strand orientation (`plus` or `minus`) |
 
-**Sheet 2 — `vivc110snps`**
+**Sheet 2 — `snp_panel`**
 
-Reference panel with SNP positions in 12x and T2T coordinates.
+Reference panel with SNP positions and strand information. Required to look up SNP names and strand orientation for each position.
 
 **Excel formulas used:**
 
@@ -320,11 +331,11 @@ Reference panel with SNP positions in 12x and T2T coordinates.
 # Convert numeric GT to letter genotype (column GT_L)
 =SE(F2="0/0";C2&"/"&C2;SE(F2="0/1";C2&"/"&D2;SE(F2="1/1";D2&"/"&D2;"")))
 
-# Look up SNP name from reference panel
-=ÍNDICE(vivc110snps!$A:$A;CORRESP(B2;vivc110snps!$C:$C;0))
+# Look up SNP name from reference panel (adjust sheet and column references as needed)
+=ÍNDICE(snp_panel!$A:$A;CORRESP(B2;snp_panel!$C:$C;0))
 
 # Look up strand
-=ÍNDICE(vivc110snps!$D:$D;CORRESP(B2;vivc110snps!$C:$C;0))
+=ÍNDICE(snp_panel!$D:$D;CORRESP(B2;snp_panel!$C:$C;0))
 ```
 
 **Strand correction for `minus` strand SNPs (column GT_CORRECT_2):**
@@ -344,9 +355,9 @@ For `plus` strand SNPs, `GT_CORRECT_2` is simply `GT_L` without the `/`.
 
 ### 06. VIVC Cultivar Identification
 
-The R script `comparar_amostra_vivc_v4.R` compares each sample's corrected SNP profile against the VIVC database (~1874 varieties) using the 110 diagnostic SNPs.
+The R script `comparar_amostra_vivc_v4.R` compares each sample's corrected SNP profile against the VIVC database (~1874 varieties) using the diagnostic SNP panel.
 
-> **Requires:** `vivc_snp_db.txt` (not included — third-party file)
+> **Requires:** A tab-separated database file with genotypes for all reference varieties across the SNP panel (not included — obtain from the SNP panel authors).
 
 **Usage in RStudio:**
 
@@ -357,10 +368,10 @@ The R script `comparar_amostra_vivc_v4.R` compares each sample's corrected SNP p
 rm(list = ls())  # clear environment before each run
 library(readxl)
 
-FICHEIRO_AMOSTRA <- "C:/path/to/genotypes/SAMPLE_NAME.xlsx"
+FICHEIRO_AMOSTRA <- "/path/to/genotypes/SAMPLE_NAME.xlsx"
 NOME_AMOSTRA     <- "SAMPLE_NAME"   # must match Excel sheet name
-FICHEIRO_DB      <- "C:/path/to/reference/vivc_snp_db.txt"
-PASTA_OUTPUT     <- "C:/path/to/results_vivc/"
+FICHEIRO_DB      <- "/path/to/reference/snp_database.txt"  # tab-separated variety database
+PASTA_OUTPUT     <- "/path/to/results_vivc/"
 ```
 
 3. Run with `Ctrl+Shift+Enter`
@@ -392,6 +403,8 @@ The **T2T (Telomere-to-Telomere) PN40024** reference genome was used for all map
 - The pipeline runs in **WSL2** (Windows Subsystem for Linux 2) with conda
 - Large files (BAMs, FASTQs, GVCFs) are not included due to size — add them to `.gitignore`
 - For each new sample, only the `SAMPLE` name needs to be updated in the scripts
-- The `vivc112.bed` BED file targets 110 SNP positions in T2T coordinates and is required for GATK `--intervals`
-- SNP strand correction is critical — incorrect strand orientation leads to systematically wrong genotype calls during VIVC comparison
-- The script must be run with `rm(list = ls())` at the start to avoid carrying over variables between samples in RStudio
+- **Step 04** requires a BED file with the target SNP positions in T2T coordinates — obtain from the SNP panel authors
+- **Step 05** requires a tab-separated SNP reference panel with positions and strand information — obtain from the SNP panel authors
+- **Step 06** requires a tab-separated database file with genotypes for all reference varieties — obtain from the SNP panel authors
+- SNP strand correction is critical — incorrect strand orientation leads to systematically wrong genotype calls during cultivar comparison
+- The R script must be run with `rm(list = ls())` at the start to avoid carrying over variables between samples in RStudio
