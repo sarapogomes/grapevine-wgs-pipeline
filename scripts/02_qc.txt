@@ -1,0 +1,39 @@
+QC
+
+fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL2_067_1_unpaired.fastq" \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL2_067_2_unpaired.fastq"
+
+fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL2_020_1_unpaired.fastq" \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL2_020_2_unpaired.fastq"
+
+fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL4_044_1_unpaired.fastq" \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL4_044_2_unpaired.fastq"
+
+fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL4_114_1_unpaired.fastq" \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL4_114_2_unpaired.fastq"
+
+fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL6_070_1_unpaired.fastq" \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL6_070_2_unpaired.fastq"
+
+fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/TN_1_unpaired.fastq" \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/TN_2_unpaired.fastq"
+
+fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/SOUSAO_GALEGO_1_unpaired.fastq" \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/SOUSAO_GALEGO_2_unpaired.fastq"
+
+fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5-096_REP_1_unpaired.fastq" \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/BL5-096_REP_2_unpaired.fastq"
+
+fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/ESGANA_CAO_1_unpaired.fastq" \
+"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/ESGANA_CAO_2_unpaired.fastq"
+
+

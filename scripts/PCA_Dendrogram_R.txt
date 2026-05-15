@@ -1,0 +1,97 @@
+#PCA e Dendrograma
+library(ggplot2)
+library(ggrepel)  # para labels sem sobreposição
+
+# instalar se necessário
+if(!require("ggrepel")) install.packages("ggrepel")
+
+# ---------------------------------------------------
+# PCA a partir da matriz de kinship
+# ---------------------------------------------------
+
+# Reconstruir matriz (se já não estiver no ambiente)
+kin <- read.table(
+    "C:/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/videira_king_clean.kin",
+    header=TRUE, sep="\t")
+
+samples <- unique(c(as.character(kin$ID1), as.character(kin$ID2)))
+mat <- matrix(0, nrow=length(samples), ncol=length(samples),
+              dimnames=list(samples, samples))
+diag(mat) <- 0.5
+for(i in seq_len(nrow(kin))){
+    s1 <- as.character(kin$ID1[i])
+    s2 <- as.character(kin$ID2[i])
+    mat[s1,s2] <- kin$Kinship[i]
+    mat[s2,s1] <- kin$Kinship[i]
+}
+
+# PCA sobre a GRM
+pca <- prcomp(mat, scale.=FALSE)
+pca_df <- data.frame(
+    sample  = rownames(pca$x),
+    PC1     = pca$x[,1],
+    PC2     = pca$x[,2],
+    PC3     = pca$x[,3]
+)
+
+# Variância explicada
+var_exp <- round(summary(pca)$importance[2,] * 100, 1)
+cat("Variância explicada:\n")
+print(var_exp[1:5])
+
+# Grupo para colorir (castas nomeadas vs amostras BL)
+pca_df$grupo <- ifelse(
+    grepl("^BL", pca_df$sample), "BL (campo)",
+    ifelse(pca_df$sample %in% c("BL1_088","BL5_031"), "Clone", "Casta nomeada")
+)
+pca_df$grupo <- case_when(
+    pca_df$sample %in% c("BL1_088","BL5_031") ~ "Clone (BL1_088 = BL5_031)",
+    grepl("^BL", pca_df$sample)                ~ "BL (campo)",
+    TRUE                                        ~ "Casta nomeada"
+)
+
+# Plot PC1 vs PC2
+ggplot(pca_df, aes(x=PC1, y=PC2, color=grupo, label=sample)) +
+    geom_point(size=3.5, alpha=0.9) +
+    geom_text_repel(size=3, max.overlaps=20) +
+    scale_color_manual(values=c(
+        "Clone (BL1_088 = BL5_031)" = "#A32D2D",
+        "BL (campo)"                = "#185FA5",
+        "Casta nomeada"             = "#1D9E75"
+    )) +
+    labs(title="PCA — Vitis vinifera (painel VIVC 112)",
+         subtitle="14 amostras | wgs_videira (BL2_020 excluído)",
+         x=paste0("PC1 (", var_exp[1], "%)"),
+         y=paste0("PC2 (", var_exp[2], "%)"),
+         color="Grupo") +
+    theme_minimal(base_size=13) +
+    theme(legend.position="bottom")
+
+ggsave("C:/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/pca_kinship.pdf",
+       width=9, height=7)
+
+# ---------------------------------------------------
+# Dendrograma de distâncias genéticas
+# ---------------------------------------------------
+
+# Converter kinship em distância: d = 0.5 - phi
+dist_mat <- as.dist(0.5 - mat)
+
+# Clustering hierárquico (average linkage — adequado para castas)
+hc <- hclust(dist_mat, method="average")
+
+# Plot
+pdf("C:/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/dendrograma_kinship.pdf",
+    width=10, height=6)
+par(mar=c(4,4,3,1))
+plot(hc,
+     main="Dendrograma de distâncias genéticas — Vitis vinifera",
+     sub="14 amostras | wgs_videira (BL2_020 excluído)",
+     xlab="Distância genética (0.5 − φ)",
+     ylab="Altura",
+     cex=0.9,
+     hang=-1)
+rect.hclust(hc, k=4, border=c("#A32D2D","#185FA5","#1D9E75","#BA7517"))
+dev.off()
+
+message("Feito! pca_kinship.pdf e dendrograma_kinship.pdf gerados.")

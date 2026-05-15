@@ -1,0 +1,31 @@
+# Create a new conda environment for WGS analysis
+# This isolates our tools from other projects and prevents conflicts
+conda create -n wgs_analysis python=3.9
+ 
+# Activate the environment - all subsequent installations will go here
+conda activate wgs_analysis
+ 
+# Add bioinformatics channels to conda
+# bioconda: specialized channel for bioinformatics software
+# conda-forge: community-maintained packages with high quality standards
+conda config --add channels bioconda
+conda config --add channels conda-forge
+conda config --set channel_priority strict  # Prevents package conflicts
+ 
+# Install GATK and essential tools for the entire workflow
+conda install -y \
+    gatk4 \          # Main variant calling toolkit
+    bwa \            # Read alignment tool
+    samtools \       # SAM/BAM file manipulation
+    picard \         # Java-based tools for BAM processing
+    trim-galore \    # Adapter trimming and quality control
+    fastqc \         # Sequencing quality assessment
+    bcftools \       # VCF file manipulation and statistics
+    snpeff \         # Variant annotation and effect prediction
+    bedtools \       # Genomic interval operations
+    vcftools \       # VCF filtering and format conversion
+    tabix  \         # VCF indexing and querying
+    tree             # Show directory structure
+ 
+# Verify GATK installation and check version
+gatk --version
