@@ -1,0 +1,3 @@
+# Linguística do repositório
+scripts/*.R linguist-detectable=false
+scripts/*.txt linguist-detectable=false
