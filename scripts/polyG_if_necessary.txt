@@ -1,35 +1,8 @@
 fastp \
-  -i /mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_1_paired.fastq -I /mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_2_paired.fastq \
-  -o /mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_1_paired.clean.fastq -O /mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_2_paired.clean.fastq \
+  -i /mnt/c/Users/User/Desktop/wgs_videira/trimmed/sample_1_paired.fastq -I /mnt/c/Users/User/Desktop/wgs_videira/trimmed/sample_2_paired.fastq \
+  -o /mnt/c/Users/User/Desktop/wgs_videira/trimmed/sample_1_paired.clean.fastq -O /mnt/c/Users/User/Desktop/wgs_videira/trimmed/sample_2_paired.clean.fastq \
   --trim_poly_g \
   --thread 8 \
   --html fastp_report.html \
   --json fastp_report.json
 
-fastp \
-  -i /mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_1_paired.fastq -I /mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_2_paired.fastq \
-  -o /mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_1_paired.clean.fastq -O /mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_2_paired.clean.fastq \
-  --trim_poly_g \
-  --thread 8 \
-  --html fastp_report.html \
-  --json fastp_report.json
-
-fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
-"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_1_paired.clean.fastq" \
-"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/LOUREIRO_2_paired.clean.fastq"
-
-fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
-"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_1_paired.clean.fastq" \
-"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/PINTOSA_2_paired.clean.fastq"
-
-fastp \
-  -i /mnt/c/Users/User/Desktop/wgs_videira/trimmed/TN_1_paired.fastq -I /mnt/c/Users/User/Desktop/wgs_videira/trimmed/TN_2_paired.fastq \
-  -o /mnt/c/Users/User/Desktop/wgs_videira/trimmed/TN_1_paired.clean.fastq -O /mnt/c/Users/User/Desktop/wgs_videira/trimmed/TN_2_paired.clean.fastq \
-  --trim_poly_g \
-  --thread 8 \
-  --html fastp_report.html \
-  --json fastp_report.json
-
-fastqc -o /mnt/c/Users/User/Desktop/wgs_videira/qc \
-"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/TN_1_paired.clean.fastq" \
-"/mnt/c/Users/User/Desktop/wgs_videira/trimmed/TN_2_paired.clean.fastq"
