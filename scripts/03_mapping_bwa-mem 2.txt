@@ -8,29 +8,29 @@ samtools faidx "$REF"
 echo "Referência indexada com sucesso!"
 
 REF="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/reference/T2T_ref/T2T_ref.fasta"
-R1="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/trimmed/BL5_006_1_paired.fastq"
-R2="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/trimmed/BL5_006_2_paired.fastq"
+R1="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/trimmed/sample_1_paired.fastq"
+R2="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/trimmed/sample_paired.fastq"
 
 
 # Alinhamento (usa todos os núcleos disponíveis)
-bwa-mem2 mem -t $(nproc) -R "@RG\tID:BL5_006\tSM:BL5_006\tPL:ILLUMINA" \
-    "$REF" "$R1" "$R2" > BL5_006_aligned.sam
+bwa-mem2 mem -t $(nproc) -R "@RG\tID:sample\tSM:sample\tPL:ILLUMINA" \
+    "$REF" "$R1" "$R2" > sample_aligned.sam
 
 # Converter para BAM ordenado
-samtools view -@ $(nproc) -bS BL5_006_aligned.sam | \
-samtools sort -@ $(nproc) -o BL5_006_sorted.bam -
+samtools view -@ $(nproc) -bS sample_aligned.sam | \
+samtools sort -@ $(nproc) -o sample_sorted.bam -
 
 # Indexar o BAM final
-samtools index BL5_006_sorted.bam
+samtools index sample_sorted.bam
 
 # Apagar ficheiro temporário gigante
-rm BL5_006_aligned.sam
+rm sample_aligned.sam
 
-echo "Alinhamento concluído → BL5_006_sorted.bam criado"
+echo "Alinhamento concluído → sample_sorted.bam criado"
 
 #QC
 
-BAM="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/mapping_V5/BL2_067_sorted.bam"
+BAM="/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/mapping_V5/sample_sorted.bam"
 
 samtools flagstat "$BAM"
 

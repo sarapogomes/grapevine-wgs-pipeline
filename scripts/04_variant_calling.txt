@@ -3,10 +3,10 @@
 cd /mnt/c/Users/User/Downloads/gatk-4.6.2.0/gatk-4.6.2.0
 
 ./gatk HaplotypeCaller -R /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/reference/T2T_ref/T2T_ref.fasta 
--I /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/mapping_V5/BL4_114_sorted.bam 
+-I /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/mapping_V5/sample_sorted.bam 
 -L /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/vivc112.bed 
--O /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/BL4_114.g.vcf.gz -ERC GVCF
+-O /mnt/c/Users/User/Desktop/wgs_videira/vitis_project/sample.g.vcf.gz -ERC GVCF
 
 bcftools query -f '%CHROM %POS %REF %ALT [ %GT]\n' 
-/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/BL4_114.g.vcf.gz > 
-/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/BL4_114.txt
+/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/sample.g.vcf.gz > 
+/mnt/c/Users/User/Desktop/wgs_videira/vitis_project/sample.txt

@@ -20,6 +20,17 @@ nrow(kin)
 library(ggplot2)
 library(reshape2)
 
+# Amostras a manter
+AMOSTRAS <- c("BL1_088","BL2_020","BL2_067","BL4_044","BL4_114",
+               "BL5_006","BL5_031","BL5_096_REP","BL6_070")
+
+kin <- read.table(
+    "C:/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/videira_king.kin",
+    header=TRUE, sep="\t")
+
+# Filtrar apenas pares entre as 9 amostras
+kin <- kin[kin$ID1 %in% AMOSTRAS & kin$ID2 %in% AMOSTRAS, ]
+
 # Classificar relações
 kin$relationship <- cut(kin$Kinship,
     breaks = c(-Inf, 0.035, 0.09, 0.18, 0.35, 0.45, Inf),

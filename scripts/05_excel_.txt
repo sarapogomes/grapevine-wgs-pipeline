@@ -1,15 +1,15 @@
 #Formulas do excel
 
-#passar genótipos a letras
+#Converter genótipos numéricos para letras
 =SE(F2="0/0";C2&"/"&C2;SE(F2="0/1";C2&"/"&D2;SE(F2="1/1";D2&"/"&D2;"")))
 
-#fazer correspondência com os SNPs da base dados
+#Fazer correspondência com os SNPs da base dados
 =ÍNDICE(vivc110snps!$A:$A;CORRESP(B2;vivc110snps!$C:$C;0))
 =ÍNDICE(vivc110snps!$D:$D;CORRESP(B2;vivc110snps!$C:$C;0))
 
 =SE(I2="plus";G2;"")
 
-#regra paara minus
+#Regra para strand minus
 A-T
 T-A
 C-G

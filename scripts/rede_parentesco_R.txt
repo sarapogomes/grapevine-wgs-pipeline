@@ -5,29 +5,31 @@ if(!require("tidygraph")) install.packages("tidygraph")
 library(igraph)
 library(ggraph)
 library(tidygraph)
+library(dplyr)
 
-# Ler dados
+AMOSTRAS <- c("BL1_088","BL2_020","BL2_067","BL4_044","BL4_114",
+               "BL5_006","BL5_031","BL5_096_REP","BL6_070")
+
 kin <- read.table(
-    "C:/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/videira_king_clean.kin",
+    "C:/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/videira_king.kin",
     header=TRUE, sep="\t")
 
-# Usar apenas pares com parentesco real (φ > 0.09)
+# Filtrar pares entre as 9 amostras com φ > 0.09
+kin <- kin[kin$ID1 %in% AMOSTRAS & kin$ID2 %in% AMOSTRAS, ]
 edges <- kin[kin$Kinship > 0.09, c("ID1","ID2","Kinship")]
 edges$relationship <- ifelse(
     edges$Kinship >= 0.45, "Clone",
     ifelse(edges$Kinship >= 0.18, "1º grau", "2º grau")
 )
 
-# Construir grafo
 g <- graph_from_data_frame(edges, directed=FALSE)
-
-# Tipo de nó (casta nomeada vs BL)
-V(g)$tipo <- ifelse(
-    V(g)$name %in% c("BL1_088","BL5_031"), "Clone",
-    ifelse(grepl("^BL", V(g)$name), "BL (campo)", "Casta nomeada")
+V(g)$tipo <- case_when(
+    V(g)$name %in% c("BL1_088","BL5_031") ~ "Clone",
+    V(g)$name == "BL2_020"                 ~ "Outlier",
+    grepl("^BL", V(g)$name)                ~ "BL (campo)",
+    TRUE                                    ~ "Casta nomeada"
 )
 
-# Plot
 set.seed(42)
 ggraph(g, layout="fr") +
     geom_edge_link(aes(width=Kinship, color=relationship), alpha=0.7) +
@@ -35,24 +37,24 @@ ggraph(g, layout="fr") +
     geom_node_label(aes(label=name, color=tipo),
                     repel=TRUE, size=3,
                     label.padding=unit(0.15,"lines"),
-                    label.size=0.2,
-                    fill="white") +
+                    label.size=0.2, fill="white") +
     scale_edge_width(range=c(0.5,3), name="φ") +
     scale_edge_color_manual(values=c(
-        "Clone"    = "#A32D2D",
-        "1º grau"  = "#185FA5",
-        "2º grau"  = "#1D9E75"
+        "Clone"   = "#A32D2D",
+        "1º grau" = "#185FA5",
+        "2º grau" = "#1D9E75"
     ), name="Grau") +
     scale_color_manual(values=c(
         "Clone"         = "#A32D2D",
         "BL (campo)"    = "#185FA5",
+        "Outlier"       = "#BA7517",
         "Casta nomeada" = "#1D9E75"
     ), name="Tipo") +
     labs(title="Rede de parentesco — Vitis vinifera",
-         subtitle="14 amostras | pares com φ > 0.09 | wgs_videira") +
+         subtitle="9 amostras | pares com φ > 0.09 | wgs_videira") +
     theme_graph(base_family="sans")
 
-ggsave("C:/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/rede_parentesco.pdf",
+ggsave("C:/Users/User/Desktop/wgs_videira/vitis_project/vcf_files_V5/rede_parentesco_9.pdf",
        width=11, height=8)
 
-message("Feito! rede_parentesco.pdf gerado.")
+message("Feito! rede_parentesco_9.pdf gerado.")
