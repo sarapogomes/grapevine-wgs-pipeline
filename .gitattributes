@@ -1,3 +1,5 @@
-# Linguística do repositório
-scripts/*.R linguist-detectable=false
-scripts/*.txt linguist-detectable=false
+# Não contar estes ficheiros nas estatísticas de linguagem do GitHub
+scripts/*.R        linguist-detectable=false
+scripts/*.txt      linguist-detectable=false
+*.R                linguist-detectable=false
+*.txt              linguist-detectable=false
